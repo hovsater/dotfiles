@@ -1,0 +1,65 @@
+syntax .line-comment
+
+state comment
+	char "\n" END
+	char \\ backslash
+	eat this
+
+state backslash comment
+	char "\n" comment
+	noeat comment
+
+syntax .block-comment
+
+state comment
+	str '/*' comment2
+	str '*/' END comment
+	eat this
+
+state comment2 comment
+	str '*/' comment
+	eat this
+
+syntax odin
+
+state start code
+	char -b a-zA-Z_ ident
+	char -b 0-9 number
+	char -b '"' string
+	str '/*' .block-comment:this
+	str '//' .line-comment:this
+	eat this
+
+state ident
+	char -b a-zA-Z0-9_ this
+	inlist type start
+	inlist keyword start
+	inlist constant start
+	noeat start
+
+state number numeric
+	char -b 0-9 this
+	noeat start
+
+state string
+	char '"' start string
+	char -b \\ string-escape
+	eat this
+
+state string-escape special
+	char -b abefnrtv\\\"\' string special
+	recolor string 1
+	eat string
+
+list keyword asm auto_cast bit_set break case cast context continue defer \
+distinct do dynamic else enum fallthrough for foreign if import in map not_in \
+or_else or_return package proc return struct switch transmute typeid union using \
+when where
+
+list constant nil true false
+
+list type any b16 b32 b64 b8 bool byte complex128 complex32 complex64 cstring \
+f16 f16be f16le f32 f32be f32le f64 f64be f64le i128 i128be i128le i16 i16be \
+i16le i32 i32be i32le i64 i64be i64le i8 int quaternion128 quaternion256 \
+quaternion64 rawptr rune string typeid u128 u128be u128le u16 u16be u16le u32 \
+u32be u32le u64 u64be u64le u8 uint uintptr

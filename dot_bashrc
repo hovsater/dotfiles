@@ -1,0 +1,165 @@
+# Utilities
+function checkbin() { [[ -x "$(command -v "$1")" ]] ; }
+function tpwd() { tmux new -s "$(basename "$PWD")" ; }
+
+# Prevent output redirection using ‘>’, ‘>&’, and ‘<>’ from overwriting
+# existing files.
+set -o noclobber
+
+# Minor errors in the spelling of a directory component in a cd command will be
+# corrected.
+shopt -s cdspell
+
+# Bash attempts spelling correction on directory names during word completion
+# if the directory name initially supplied does not exist.
+shopt -s dirspell
+
+# The pattern ‘**’ used in a filename expansion context will match all files
+# and zero or more directories and subdirectories. If the pattern is followed
+# by a ‘/’, only directories and subdirectories match.
+shopt -s globstar
+
+# Bash matches filenames in a case-insensitive fashion when performing filename
+# expansion.
+shopt -s nocaseglob
+
+# The history list is appended to the file named by the value of the HISTFILE
+# variable when the shell exits, rather than overwriting the file.
+shopt -s histappend
+
+# See https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html.
+HISTCONTROL="erasedups:ignoreboth"
+HISTTIMEFORMAT="%F %T "
+
+# If set to a number greater than zero, the value is used as the number of
+# trailing directory components to retain when expanding the \w and \W prompt
+# string escapes.
+PROMPT_DIRTRIM=2
+
+# Specify a proper locale.
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+
+# Use dte as the interactive editor.
+export EDITOR="dte"
+
+# Enable colors for the ls-command.
+export CLICOLOR=1
+
+# Add $HOME/bin to PATH.
+export PATH="$HOME/bin:$PATH"
+
+# Use 1Password SSH Agent
+export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+
+# Set prompt.
+PS1="\w\$(__git_ps1) \\$ "
+
+# Homebrew setup
+if [[ -d "/opt/homebrew" ]]; then
+  homebrew_prefix="/opt/homebrew"
+
+  eval "$($homebrew_prefix/bin/brew shellenv)"
+
+  # Enable bash completion.
+  [[ -r "$homebrew_prefix/etc/profile.d/bash_completion.sh" ]] && source "$homebrew_prefix/etc/profile.d/bash_completion.sh"
+
+  # Configure paths for pkg-config
+  if checkbin pkg-config; then
+    [[ -d "$homebrew_prefix/opt/openssl@1.1" ]] && export PKG_CONFIG_PATH="$homebrew_prefix/opt/openssl@1.1/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  fi
+fi
+
+# Set up asdf
+if [[ -d "$HOME/.asdf" ]]; then
+  source "$HOME/.asdf/asdf.sh"
+  source "$HOME/.asdf/completions/asdf.bash"
+fi
+
+# Set up direnv
+if checkbin direnv; then
+  eval "$(direnv hook bash)"
+  checkbin tmux && alias tmux='direnv exec / tmux'
+fi
+
+# Set up fzf
+if checkbin fzf; then
+  export FZF_DEFAULT_COMMAND="fd --type file"
+  [[ -f "$HOME/.fzf.bash" ]] && source "$HOME/.fzf.bash"
+fi
+
+# Set up AWS CLI completion
+checkbin aws_completer && complete -C "$(which aws_completer)" aws
+
+# Set up Google Cloud CLI
+if [[ -d "$HOME/google-cloud-sdk" ]]; then
+  source "$HOME/google-cloud-sdk/completion.bash.inc"
+  source "$HOME/google-cloud-sdk/path.bash.inc"
+fi
+
+function m() {
+  local marks="$HOME/.config/m/marks"
+  local version="0.0.1"
+
+  # Create "$HOME/.config/m/marks" if it doesn't exist.
+  if ! [[ -f "$marks" ]]; then
+    mkdir -p "$(dirname "$marks")"
+    touch "$marks"
+  fi
+
+  case "$1" in
+    ""|"-h"|"--help")
+	cat <<-HELP
+	usage: [OPTIONS...] MARK
+	  -l	--list		List available marks
+	  -e	--edit		Edit available marks
+	  -h	--help		Show this usage summary
+	  -v	--version	Print version information
+	HELP
+      ;;
+    "-l"|"--list")
+      cat "$marks"
+      ;;
+    "-e"|"--edit")
+      if [[ -n "$EDITOR" ]]; then
+        $EDITOR "$marks"
+      else
+        echo "m: \$EDITOR not defined. Please set it and try again."
+        return 1
+      fi
+      ;;
+    "-v"|"--version")
+      echo "$version"
+      ;;
+    *)
+      read -r mark_name mark_path < <(grep "^$1 " "$marks")
+
+      # Ensure that we got a match back
+      if [[ -n "$mark_name" ]]; then
+        # Expand tilde to the home directory.
+        mark_path=${mark_path/#\~/$HOME}
+
+        if [[ -d "$mark_path" ]]; then
+          cd "$mark_path" || return
+        elif [[ -f "$mark_path" ]]; then
+          $EDITOR "$mark_path"
+        else
+          echo "m: $mark_path is not a directory/file"
+          return 1
+        fi
+      else
+        echo "m: mark $1 does not exist"
+        return 1
+      fi
+      ;;
+  esac
+}
+
+_m_completion() {
+  local marks
+
+  marks=$(m -l | cut -d ' ' -f1)
+  COMPREPLY=($(compgen -W "$marks" -- "${COMP_WORDS[COMP_CWORD]}"))
+}
+
+complete -F _m_completion m

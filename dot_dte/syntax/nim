@@ -1,0 +1,75 @@
+syntax nim
+
+# TODO: Multiline comments (See https://nim-lang.org/docs/manual.html#lexical-analysis-multiline-comments)
+# TODO: Identifiers must not allow two immediate following underscores. (See https://nim-lang.org/docs/manual.html#lexical-analysis-identifiers-amp-keywords)
+# TODO: Identifiers must not end with an underscore. (See https://nim-lang.org/docs/manual.html#lexical-analysis-identifiers-amp-keywords)
+# TODO: String escape sequences. (See https://nim-lang.org/docs/manual.html#lexical-analysis-string-literals)
+# TODO: Raw string literals (See https://nim-lang.org/docs/manual.html#lexical-analysis-raw-string-literals)
+# TODO: Generalized raw string literals (See https://nim-lang.org/docs/manual.html#lexical-analysis-generalized-raw-string-literals)
+# TODO: Character literals (See https://nim-lang.org/docs/manual.html#lexical-analysis-character-literals)
+# TODO: Numeric literals (See https://nim-lang.org/docs/manual.html#lexical-analysis-numeric-literals)
+
+state start code
+  char # comment-line
+  char \" string
+  char -b a-zA-Z identifier
+  eat this
+
+state comment-line comment
+  char "\n" start
+  eat this
+
+state string
+  char \" string-triple-maybe
+  char "\n" string-invalid
+  eat this
+
+state string-invalid error
+  eat this
+
+state string-triple-maybe string
+  char \" string-triple
+  noeat start
+
+state string-triple string
+  char \" string-triple-close-maybe-1
+  eat this
+
+state string-triple-close string
+  char \" this
+  noeat start
+
+state string-triple-close-maybe-1 string
+  char \" string-triple-close-maybe-2
+  eat this
+
+state string-triple-close-maybe-2 string
+  char \" string-triple-close
+  eat this
+
+state identifier
+  char -b a-zA-Z0-9_ this
+  inlist keyword start
+  noeat start
+
+list keyword \
+  addr and as asm \
+  bind block break \
+  case cast concept const continue converter \
+  defer discard distinct div do \
+  elif else end enum except export \
+  finally for from func \
+  if import in include interface is isnot iterator \
+  let \
+  macro method mixin mod \
+  nil not notin \
+  object of or out \
+  proc ptr \
+  raise ref return \
+  shl shr static \
+  template try tuple type \
+  using \
+  var \
+  when while \
+  xor \
+  yield

@@ -1,0 +1,15 @@
+syntax clojure
+
+state start code
+	char \" clojure-string
+	char : clojure-keyword
+	eat this
+
+state clojure-string string
+	char \" start string
+	eat this
+
+state clojure-keyword special
+	char -- a-zA-Z0-9 this
+	#*+!\-_\'?<>= this
+	noeat start

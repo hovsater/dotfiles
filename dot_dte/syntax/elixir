@@ -1,0 +1,91 @@
+syntax .elixir-atom
+
+state atom-start atom
+	char -b a-zA-Z_ atom-next
+	recolor code
+	noeat END
+
+state atom-next atom
+	char -b a-zA-Z0-9_ this
+	noeat atom-end
+
+state atom-end atom
+	char !? END atom
+	noeat END
+
+syntax elixir
+
+state start code
+	char -b A-Z alias
+	char -b _ ignore-ident
+	char -b a-z ident
+	char -b 0-9 number
+	char -b : .elixir-atom:this
+	char -b \" string
+	char -b ? codepoint
+	char -b # comment
+	eat this
+
+state alias
+	char -b a-zA-Z0-9_ this
+	noeat start
+
+state ignore-ident comment
+	char -b a-zA-Z0-9_ this
+	noeat start
+
+state ident
+	char -b a-zA-Z0-9_ this
+	char -b : keyword-atom
+	inlist constant start
+	inlist keyword start
+	noeat start
+
+state keyword-atom atom
+	recolor atom
+	noeat start
+
+state number numeric
+	char -b 0-9 this
+	noeat start
+
+state string
+	char \" maybe-string-heredoc
+	char -b \\ string-escape
+	eat this
+
+state maybe-string-heredoc string
+	char \" string-heredoc
+	eat start
+
+state string-heredoc string
+	char "\n" maybe-string-heredoc-end
+	eat this
+
+state maybe-string-heredoc-end string
+	char -b \" this
+	bufis '"""' start string
+	eat this
+
+state string-escape special
+	char -b 0abtnvfres#\\\" string special
+	recolor string 1
+	eat string
+
+state codepoint numeric
+	eat start numeric
+
+state comment
+	char "\n" start
+	eat this
+
+list constant nil true false
+
+list keyword after alias and case catch cond def defdelegate defexception \
+defguard defguardp defimpl defmacro defmacrop defmodule defn defnp \
+defoverridable defp defprotocol defstruct do else end fn for if import in not or \
+quote raise receive require reraise rescue super throw try unless unquote \
+unquote_splicing use when with __ENV__ __MODULE__
+
+default type alias
+default special atom

@@ -1,0 +1,81 @@
+syntax elm
+
+state start code
+  char -b a-z ident
+  char -b A-Z type
+  char -b \" string
+  str -- "--" inline-comment
+  eat this
+
+state ident
+  char -b a-zA-Z0-9_ this
+  inlist import-module import-module-decl keyword
+  inlist keyword start
+  noeat start
+
+state import-module-decl
+  char " " this
+  char A-Z import-module-decl-name
+  noeat start
+
+state import-module-decl-name
+  char a-zA-Z0-9_. this
+  noeat start
+
+state type
+  char -b a-zA-Z0-9_ this
+  char -b . module-qualifier
+  noeat start
+
+state module-qualifier
+  recolor code
+  noeat start
+
+state string
+  char -b \" start string
+  char -b \\ string-escape
+  char "\n" start
+  eat this
+
+state string-escape special
+  char -b nrt\"\'\\ string special
+  char -b u string-escape-unicode-start
+  recolor string
+  eat string
+
+state string-escape-unicode-start special
+  char -b { string-escape-unicode-1
+  recolor string
+  noeat string
+
+state string-escape-unicode-1 special
+  char -b a-fA-F0-9 string-escape-unicode-2
+  recolor string
+  noeat string
+
+state string-escape-unicode-2 special
+  char -b a-fA-F0-9 string-escape-unicode-3
+  recolor string
+  noeat string
+
+state string-escape-unicode-3 special
+  char -b a-fA-F0-9 string-escape-unicode-4
+  recolor string
+  noeat string
+
+state string-escape-unicode-4 special
+  char -b a-fA-F0-9 string-escape-unicode-end
+  recolor string
+  noeat string
+
+state string-escape-unicode-end special
+  char -b } string special
+  recolor string
+  noeat string
+
+state inline-comment comment
+  char -n "\n" this
+  noeat start
+
+list import-module import module
+list keyword type alias port if then else case of let in where exposing as

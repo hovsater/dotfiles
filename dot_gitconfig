@@ -1,0 +1,12 @@
+[user]
+	email = kevin@hovsater.com
+	name = Kevin Hovsäter
+[alias]
+	git = !git
+	sync = "!f() { [ \"$#\" -ne 1 ] && echo refname required >&2 || { git fetch \"${1%%/*}\" && git rebase -r --autostash \"$1\"; } }; f"
+[core]
+	excludesfile = ~/.gitignore
+[pull]
+	ff = only
+[init]
+	defaultBranch = main

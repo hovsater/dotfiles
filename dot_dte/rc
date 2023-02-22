@@ -1,0 +1,76 @@
+alias codespell 'compile -1s basic codespell $FILE'
+alias docs "eval -e errmsg dte-docs $FILETYPE"
+alias format 'bookmark; eval -e errmsg dte-format $FILETYPE; tag -r'
+alias gd 'wsplit -t; set filetype diff; pipe-from git diff'
+alias gf 'wsplit -t; set filetype diff; pipe-from git diff -- $FILE'
+alias gg "git-grep"
+alias git "run git"
+alias msgs 'exec-msg fzf'
+alias pbcopy 'pipe-to pbcopy'
+alias pbpaste 'pipe-from pbpaste'
+alias reload 'bookmark; filter cat $FILE; save -f; tag -r'
+alias sort "sort-lines"
+alias tags "exec-tag dte-tags"
+alias tig "run tig"
+
+bind -n 'C-S-enter' 'new-line -a'
+bind -n 'C-S-h' 'format'
+bind -n 'C-[' 'tag -r'
+bind -n 'C-b' 'bookmark'
+bind -n 'C-d' 'copy; paste'
+bind -n 'C-delete' 'delete-word'
+bind -n 'C-enter' 'new-line'
+bind -n 'C-j' 'join'
+bind -n 'C-p' 'eval dte-find-file $FILE'
+bind -n 'C-v' 'paste -a'
+bind -n 'C-w'
+bind -n 'M-S-a' 'macro play'
+bind -n 'M-S-w' 'wclose -p'
+bind -n 'M-a' 'macro toggle'
+bind -n 'M-g' 'compile -1s basic sh -c "git grep -nwF --column "$WORD" || true"'
+bind -n 'M-w' 'close -p'
+
+set editorconfig true
+
+# Support for project-specific .dterc files
+ft -b dte .dterc
+include -q .dterc
+
+# Clojure
+ft clojure clj
+option clojure expand-tab true emulate-tab true indent-width 2
+
+# TypeScript
+ft javascript jsx ts tsx
+
+# Elm
+ft elm elm
+option elm expand-tab true emulate-tab true indent-width 4
+
+# Elixir
+option elixir \
+expand-tab true \
+emulate-tab true \
+indent-width 2 \
+indent-regex '(do|->)[ ]*$'
+
+# Nim
+option nim \
+  expand-tab true \
+  emulate-tab true \
+  indent-width 2
+
+# OCaml
+ft ocaml ml mli
+option ocaml expand-tab true emulate-tab true \
+             indent-width 2 text-width 80 \
+	     ws-error 'special,trailing'
+
+# Odin
+ft odin odin
+
+# Ruby
+hi symbol magenta
+hi true-false-nil cyan bold
+option ruby expand-tab true emulate-tab true \
+            indent-width 2

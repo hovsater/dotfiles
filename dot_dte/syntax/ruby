@@ -1,0 +1,109 @@
+syntax .ruby-sym
+
+state maybe-symbol symbol
+char -b !~*/%+<>&|^=- maybe-symbol-op
+char -b @ maybe-symbol-at
+char -b a-zA-Z_ symbol
+char '"' symbol-dq
+char "'" symbol-sq
+recolor code
+noeat END
+
+state maybe-symbol-op symbol
+char -b <>=~ this
+inlist symbol-operators END symbol
+recolor code
+noeat END
+
+state maybe-symbol-at symbol
+char a-zA-Z_ symbol
+recolor code
+noeat END
+
+state symbol
+char a-zA-Z0-9_ this
+noeat symbol-end
+
+state symbol-dq symbol
+char "\"" END symbol
+eat this
+
+state symbol-sq symbol
+char "'" END symbol
+eat this
+
+state symbol-end
+char !? END symbol
+noeat END
+
+list symbol-operators \
+:! :~ :* :/ :% :+ :- :<< :>> :& :| :^ :< :<=  :>= :> :== :=== :!= :=~ :!~ :<=>
+
+syntax .ruby-heredoc
+
+state heredoc-start string
+  heredocend END
+  eat this
+
+syntax ruby
+
+state start
+  char "#" comment
+  char 0-9 number
+  char -b A-Z constant
+  char -b a-z_ identifier
+  char -b : .ruby-sym:this
+  str "<<" maybe-heredoc
+  char \' string-quote-single
+  char \" string-quote-double
+  eat this
+
+state comment
+  char "\n" start
+  eat this
+
+state number numeric
+  char 0-9_ this
+  noeat start
+
+state constant
+  char a-zA-Z0-9_ this
+  str "::" constant-scope
+  noeat start
+
+state constant-scope constant
+  char A-Z constant
+  noeat start
+
+state identifier
+  char -b a-zA-Z0-9_ this
+  char -b : keyword-argument
+  inlist keyword start
+  noeat start
+
+state maybe-heredoc
+  char -- -~ heredoc-begin
+  noeat start
+
+state heredoc-begin
+  char \'\" this
+  char -b A-Z this
+  heredocbegin .ruby-heredoc start
+
+state string-quote-single string
+  char \' start string
+  eat this
+
+state string-quote-double string
+  char \" start string
+  eat this
+
+state keyword-argument
+  recolor symbol
+  noeat start
+
+list keyword \
+__LINE__ case ensure not __ENCODING__ class false or __FILE__ def for \
+redo BEGIN defined? if rescue END do in retry alias else module return \
+and elsif next self begin end nil super break then true undef unless \
+until when while yield
