@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -e
+
+if [[ $# -lt 2 ]]; then
+  >&2 echo "usage: dte-replace <search> <replacement> [rg_args]"
+  exit 1
+fi
+
+rg "$1" --files-with-matches ${@:3} | xargs -n1 dte -c "replace -c '$1' '$2'; save; quit"

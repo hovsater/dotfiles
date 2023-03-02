@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+if [[ -z "$1" ]]; then
+  readtags -ln | fzf
+else
+  readtags -Q "(suffix? \"$1\" \$input)" -l | fzf
+fi

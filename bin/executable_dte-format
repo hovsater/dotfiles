@@ -1,0 +1,41 @@
+if [[ -z "$1" ]]; then
+	>&2 echo "Usage: dte-format <filetype>"
+	exit 1
+fi
+
+case "$1" in
+"crystal")
+	echo "filter crystal tool format -"
+	;;
+"elixir")
+	echo "filter mix format -"
+	;;
+"elm")
+	echo "filter npx elm-format --stdin"
+	;;
+"html")
+	echo "filter npx prettier --parser html"
+	;;
+"javascript")
+	echo "filter npx prettier --stdin-filepath file.js"
+	;;
+"json")
+	echo "filter npx prettier --parser json"
+	;;
+"ocaml")
+	echo "filter ocamlformat ${@:2} -"
+	;;
+"odin")
+	echo "filter odinfmt -stdin true"
+	;;
+"typescript")
+	echo "filter npx prettier --stdin-filepath file.ts"
+	;;
+"zig")
+	echo "filter zig fmt --stdin"
+	;;
+*)
+	echo >&2 "no formatter configured for filetype $1"
+	exit 1
+	;;
+esac

@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+prefix="$DTE_TOOL_PREFIX"
+
+if [[ -z "$1" || -z "$2" ]]; then
+	>&2 echo "Usage: dte-docs <filetype> <term>"
+	exit 1
+fi
+
+case "$1" in
+"elixir")
+	if [[ -f "./mix.exs" ]]; then
+		echo "wsplit -t; set filetype markdown; pipe-from $prefix mix eval \"import IEx.Helpers; h($2)\""
+	else
+		echo "wsplit -t; set filetype markdown; pipe-from $prefix elixir -e \"import IEx.Helpers; h($2)\""
+	fi
+	;;
+"ruby")
+	echo "wsplit -t; set filetype markdown; pipe-from $prefix ri -f markdown \"$2\""
+	;;
+"go")
+	shift
+	echo "wsplit -t; pipe-from $prefix go doc $@"
+	;;
+*)
+	echo >&2 "docs not configured for filetype $1"
+	exit 1
+	;;
+esac

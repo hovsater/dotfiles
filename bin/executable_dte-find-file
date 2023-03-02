@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+file_in_buffer="$1"
+
+mapfile -t fzf_output < <(fzf --expect="ctrl-x,ctrl-v" --reverse --multi --preview="cat {}" --bind="f2:change-prompt(+Ignored>)+reload(fd --type file --no-ignore)" --bind="f1:change-prompt(>)+reload(fd --type file)"); wait $!; fzf_exit=$?
+
+case "$fzf_exit" in
+  0)
+    case "${fzf_output[0]}" in
+      "ctrl-x")
+        if [[ -z "$file_in_buffer" || "${#fzf_output[@]}" -gt 2 ]]; then echo -n "open -- '${fzf_output[1]}';" ; else echo -n "wsplit -h -- '${fzf_output[1]}';" ; fi
+        for file in "${fzf_output[@]:2}"; do echo -n "wsplit -h -- '${file}';" ; done
+        echo
+        ;;
+      "ctrl-v")
+        if [[ -z "$file_in_buffer" || "${#fzf_output[@]}" -gt 2 ]]; then echo -n "open -- '${fzf_output[1]}';" ; else echo -n "wsplit -- '${fzf_output[1]}';" ; fi
+        for file in "${fzf_output[@]:2}"; do echo -n "wsplit -- '${file}';" ; done
+        echo
+        ;;
+      *)
+        echo "open -- ${fzf_output[*]:1}"
+        ;;
+    esac
+    exit 0
+    ;;
+  130)
+    exit 0
+    ;;
+  *)
+    exit "$?"
+    ;;
+esac

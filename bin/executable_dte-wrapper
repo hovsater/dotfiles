@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+abspath() {
+  echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+}
+
+checksum() {
+  local osName
+  osName="$(uname -s)"
+
+  local md5Cmd
+  case "${osName}" in
+    Linux*)
+      md5Cmd="md5sum"
+      ;;
+    Darwin*)
+      md5Cmd="md5 -r"
+      ;;
+    *)
+      >&2 echo "Unsupported os; ${osname}"
+      exit 1
+      ;;
+  esac
+
+  echo "$($md5Cmd $1)"
+}
+
+DTE_CHECKSUMS="$HOME/.dte/dte-checksums"
+DTE_LOCALRC="$(abspath "${DTE_LOCALRC:-.dterc}")"
+
+if [[ ! -f "${DTE_CHECKSUMS}" ]]; then
+  mkdir -p "$(dirname ${DTE_CHECKSUMS})"
+  touch "${DTE_CHECKSUMS}"
+fi
+
+if [[ -f "$DTE_LOCALRC" ]]; then
+  DTE_LOCALRC_CHECKSUM="$(checksum "$DTE_LOCALRC")"
+  read -r DTE_LOCALRC_STORED_CHECKSUM < <(grep "${DTE_LOCALRC}" "$DTE_CHECKSUMS")
+
+  if [[ -z "$DTE_LOCALRC_STORED_CHECKSUM" ]]; then
+    read -p "Trust ${DTE_LOCALRC}? [yn]" answer
+
+    if [[ "${answer}" == "y" ]]; then
+      echo "$DTE_LOCALRC_CHECKSUM" >> "$DTE_CHECKSUMS"
+      dte -c "include ${DTE_LOCALRC}"
+    else
+      dte
+    fi
+  elif [[ ! "$DTE_LOCALRC_CHECKSUM" == "${DTE_LOCALRC_STORED_CHECKSUM}" ]]; then
+    read -p "${DTE_LOCALRC} has changed since you last included it. Trust it? [yn]" answer
+
+    if [[ "${answer}" == "y" ]]; then
+      sed "|${DTE_LOCALRC}|c\\${DTE_LOCALRC_CHECKSUM}|" "${DTE_CHECKSUMS}"
+      dte -c "include ${DTE_LOCALRC}"
+    else
+      dte
+    fi
+
+  else
+    dte -c "include ${DTE_LOCALRC}"
+  fi
+else
+  echo "${DTE_LOCALRC} not found"
+fi
