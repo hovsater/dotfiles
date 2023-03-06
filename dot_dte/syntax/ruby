@@ -52,6 +52,7 @@ state start
   char 0-9 number
   char -b A-Z constant
   char -b a-z_ identifier
+  str "::" constant-scope
   char -b : .ruby-sym:this
   str "<<" maybe-heredoc
   char \' string-quote-single
