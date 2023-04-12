@@ -1,4 +1,3 @@
-alias codespell 'compile -1s basic codespell $FILE'
 alias docs "eval -e errmsg dte-docs $FILETYPE"
 alias format 'bookmark; eval -e errmsg dte-format $FILETYPE; tag -r'
 alias gd 'wsplit -t; set filetype diff; pipe-from git diff'
@@ -12,6 +11,7 @@ alias reload 'bookmark; filter cat $FILE; save -f; tag -r'
 alias sort "sort-lines"
 alias tags "exec-tag dte-tags"
 alias tig "run tig"
+alias typos 'compile -1s basic typos --format brief $FILE'
 
 bind -n 'C-S-enter' 'new-line -a'
 bind -n 'C-S-h' 'format'
@@ -41,8 +41,8 @@ include -q .dterc
 ft clojure clj
 option clojure expand-tab true emulate-tab true indent-width 2
 
-# TypeScript
-ft javascript jsx ts tsx
+# JavaScript
+ft javascript jsx
 
 # Elm
 ft elm elm
@@ -75,3 +75,6 @@ hi symbol magenta
 hi true-false-nil cyan bold
 option ruby expand-tab true emulate-tab true \
             indent-width 2
+
+# TypeScript
+ft typescript ts tsx

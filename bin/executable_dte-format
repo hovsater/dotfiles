@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+prefix="$DTE_TOOL_PREFIX"
+
 if [[ -z "$1" ]]; then
 	>&2 echo "Usage: dte-format <filetype>"
 	exit 1
@@ -17,7 +21,7 @@ case "$1" in
 	echo "filter npx prettier --parser html"
 	;;
 "javascript")
-	echo "filter npx prettier --stdin-filepath file.js"
+	echo "filter $prefix npx prettier --stdin-filepath file.js"
 	;;
 "json")
 	echo "filter npx prettier --parser json"
@@ -29,7 +33,7 @@ case "$1" in
 	echo "filter odinfmt -stdin true"
 	;;
 "typescript")
-	echo "filter npx prettier --stdin-filepath file.ts"
+	echo "filter $prefix npx prettier --stdin-filepath file.ts"
 	;;
 "zig")
 	echo "filter zig fmt --stdin"
