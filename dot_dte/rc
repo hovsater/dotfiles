@@ -1,12 +1,10 @@
 alias docs "eval -e errmsg dte-docs $FILETYPE"
-alias format 'bookmark; eval -e errmsg dte-format $FILETYPE; tag -r'
+alias format 'bookmark; exec -s -i buffer -o eval -e errmsg dte-format $FILETYPE; tag -r'
 alias gd 'wsplit -t; set filetype diff; pipe-from git diff'
 alias gf 'wsplit -t; set filetype diff; pipe-from git diff -- $FILE'
 alias gg "git-grep"
 alias git "run git"
 alias msgs 'exec -i msg -o msg fzf --sync --reverse --bind 'start:pos('$MSGPOS')''
-alias pbcopy 'pipe-to pbcopy'
-alias pbpaste 'pipe-from pbpaste'
 alias reload 'bookmark; filter cat $FILE; save -f; tag -r'
 alias sort "sort-lines"
 alias tags "exec-tag dte-tags"
