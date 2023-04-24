@@ -11,6 +11,7 @@ alias tags "exec-tag dte-tags"
 alias tig "run tig"
 alias typos 'compile -1s basic typos --format brief $FILE'
 
+bind -n 'C-S-c' 'copy -b'
 bind -n 'C-S-enter' 'new-line -a'
 bind -n 'C-S-h' 'format'
 bind -n 'C-[' 'tag -r'

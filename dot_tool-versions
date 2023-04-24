@@ -1,6 +1,9 @@
-elm 0.19.1
 golang 1.20.2
-nodejs lts
+nodejs 18.15.0
 postgres 15.2
-python 3.11.2
-ruby 3.2.1
+python 3.11.1
+ruby 3.2.0
+elm 0.19.1
+elixir 1.14.1
+erlang 25.1.1
+java temurin-jre-20.0.1+9
