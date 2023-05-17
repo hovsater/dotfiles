@@ -80,6 +80,11 @@ if [[ -d "$HOME/.asdf" ]]; then
   source "$HOME/.asdf/completions/asdf.bash"
 fi
 
+# Set up rustup
+if [[ -d "$HOME/.cargo/bin" ]]; then
+  export PATH="$HOME/.cargo/bin:$PATH"
+fi
+
 # Set up direnv
 if checkbin direnv; then
   eval "$(direnv hook bash)"
