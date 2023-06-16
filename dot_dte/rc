@@ -40,6 +40,10 @@ include -q .dterc
 ft clojure clj
 option clojure expand-tab true emulate-tab true indent-width 2
 
+# Crystal
+ft crystal cr
+option crystal expand-tab true emulate-tab true indent-width 2
+
 # JavaScript
 ft javascript jsx
 
@@ -68,6 +72,7 @@ option ocaml expand-tab true emulate-tab true \
 
 # Odin
 ft odin odin
+errorfmt odin '^([^(]+)[(]([0-9]+):([0-9]+)[)] (.*)$' file line column message
 
 # Ruby
 hi symbol magenta
