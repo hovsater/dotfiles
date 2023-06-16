@@ -21,7 +21,7 @@ case "$1" in
 	echo "filter npx prettier --parser html"
 	;;
 "javascript")
-	echo "filter $prefix npx prettier --stdin-filepath file.js"
+	echo "filter npx prettier --stdin-filepath file.js"
 	;;
 "json")
 	echo "filter npx prettier --parser json"
@@ -32,8 +32,11 @@ case "$1" in
 "odin")
 	echo "filter odinfmt -stdin true"
 	;;
+"ruby")
+	echo "${DTE_FORMAT_RUBY:-filter bundle exec rubocop --fix-layout --stderr --stdin file.rb}"
+	;;
 "typescript")
-	echo "filter $prefix npx prettier --stdin-filepath file.ts"
+	echo "filter npx prettier --stdin-filepath file.ts"
 	;;
 "zig")
 	echo "filter zig fmt --stdin"

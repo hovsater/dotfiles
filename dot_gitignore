@@ -1,9 +1,10 @@
 *.sublime-*
+.DS_Store
 .bin
 .direnv/
-.DS_Store
 .dterc
 .envrc
 .idea
 .tm_properties
+.tool-versions
 tags
