@@ -43,6 +43,7 @@ option clojure expand-tab true emulate-tab true indent-width 2
 # Crystal
 ft crystal cr
 option crystal expand-tab true emulate-tab true indent-width 2
+errorfmt crystal '^([^:]+):([0-9]+):([0-9]+): (.*)$' file line column message
 
 # JavaScript
 ft javascript jsx
@@ -81,4 +82,4 @@ option ruby expand-tab true emulate-tab true \
             indent-width 2
 
 # TypeScript
-ft typescript ts tsx
+ft javascript ts tsx
