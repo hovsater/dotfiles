@@ -1,10 +1,8 @@
-elixir 1.14.1
+crystal 1.9.2
 elm 0.19.1
-erlang 25.1.1
 java temurin-20.0.1+9
 nodejs 18.15.0
 postgres 15.3
 python 3.11.4
 ruby 3.2.2
-crystal 1.9.0
 zig 0.11.0
