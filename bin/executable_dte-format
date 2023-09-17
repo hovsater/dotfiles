@@ -9,37 +9,37 @@ fi
 
 case "$1" in
 "crystal")
-	echo "filter crystal tool format -"
+	echo "bookmark; filter crystal tool format -; bookmark -r"
 	;;
 "elixir")
-	echo "filter mix format -"
+	echo "bookmark; filter mix format -; bookmark -r"
 	;;
 "elm")
-	echo "filter npx elm-format --stdin"
+	echo "bookmark; filter npx elm-format --stdin; bookmark -r"
 	;;
 "html")
-	echo "filter npx prettier --parser html"
+	echo "bookmark; filter npx prettier --parser html; bookmark -r"
 	;;
 "javascript")
-	echo "filter npx prettier --stdin-filepath file.js"
+	echo "bookmark; filter npx prettier --stdin-filepath file.js; bookmark -r"
 	;;
 "json")
-	echo "filter npx prettier --parser json"
+	echo "bookmark; filter npx prettier --parser json; bookmark -r"
 	;;
 "ocaml")
-	echo "filter ocamlformat ${@:2} -"
+	echo "bookmark; filter ocamlformat ${@:2} -; bookmark -r"
 	;;
 "odin")
-	echo "filter odinfmt -stdin true"
+	echo "bookmark; filter odinfmt -stdin true; bookmark -r"
 	;;
 "ruby")
-	echo "${DTE_FORMAT_RUBY:-filter bundle exec rubocop --fix-layout --stderr --stdin file.rb}"
+	echo "${DTE_FORMAT_RUBY:-bookmark; filter bundle exec rubocop --fix-layout --stderr --stdin file.rb; bookmark -r}"
 	;;
 "typescript")
-	echo "filter npx prettier --stdin-filepath file.ts"
+	echo "bookmark; filter npx prettier --stdin-filepath file.ts; bookmark -r"
 	;;
 "zig")
-	echo "filter zig fmt --stdin"
+	echo "bookmark; filter zig fmt --stdin; bookmark -r"
 	;;
 *)
 	echo >&2 "no formatter configured for filetype $1"

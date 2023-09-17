@@ -1,5 +1,7 @@
+alias bf 'tig blame $RFILE'
+alias bl 'tig blame $RFILE +$LINENO'
 alias docs "eval -e errmsg dte-docs $FILETYPE"
-alias format 'bookmark; exec -s -i buffer -o eval -e errmsg dte-format $FILETYPE; tag -r'
+alias format 'exec -s -i buffer -o eval -e errmsg dte-format $FILETYPE'
 alias gd 'wsplit -t; set filetype diff; pipe-from git diff'
 alias gf 'wsplit -t; set filetype diff; pipe-from git diff -- $FILE'
 alias gg "git-grep"
@@ -14,6 +16,7 @@ alias typos 'compile -1s basic typos --format brief $FILE'
 bind -n 'C-S-c' 'copy -b'
 bind -n 'C-S-enter' 'new-line -a'
 bind -n 'C-S-h' 'format'
+bind -n 'C-S-p' 'tags $RFILE'
 bind -n 'C-[' 'tag -r'
 bind -n 'C-]' 'exec -s -o eval -e errmsg dte-tag $WORD'
 bind -n 'C-b' 'bookmark'

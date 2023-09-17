@@ -46,6 +46,9 @@ export EDITOR="dte"
 # Enable colors for the ls-command.
 export CLICOLOR=1
 
+# Add $HOME/.local/bin to PATH
+export PATH="$HOME/.local/bin:$PATH"
+
 # Add $HOME/bin to PATH.
 export PATH="$HOME/bin:$PATH"
 
