@@ -100,15 +100,6 @@ if checkbin fzf; then
   [[ -f "$HOME/.fzf.bash" ]] && source "$HOME/.fzf.bash"
 fi
 
-# Set up AWS CLI completion
-checkbin aws_completer && complete -C "$(which aws_completer)" aws
-
-# Set up Google Cloud CLI
-if [[ -d "$HOME/google-cloud-sdk" ]]; then
-  source "$HOME/google-cloud-sdk/completion.bash.inc"
-  source "$HOME/google-cloud-sdk/path.bash.inc"
-fi
-
 function m() {
   local marks="$HOME/.config/m/marks"
   local version="0.0.1"
