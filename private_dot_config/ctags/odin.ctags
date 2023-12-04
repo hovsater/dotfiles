@@ -1,0 +1,8 @@
+--langdef=odin
+
+--map-odin=.odin
+
+--kinddef-odin=f,function,functions
+
+
+--regex-odin=/^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*::\s*proc/\1/f/{scope=push}
